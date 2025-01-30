@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-
+import commonAside from '../components/commonAside.vue';
 </script>
 
 <style scoped lang="less">
@@ -24,7 +24,7 @@
     .common-layout, .lay-container {
         height: 100%;
     }
-    
+
     .el-header {
         background-color: #333;
     }

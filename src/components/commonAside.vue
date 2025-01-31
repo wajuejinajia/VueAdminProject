@@ -3,6 +3,7 @@
         <el-menu
            background-color="#545c64"
            text-color="#fff"
+           :collapse="false"
         >
             <h3>通用后台管理系统</h3>
             <el-menu-item

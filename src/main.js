@@ -9,6 +9,8 @@ import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // 引入pinia
 import { createPinia } from 'pinia'
+// 引入mock
+import '@/api/mock.js'
 
 const app = createApp(App)
 const pinia = createPinia()

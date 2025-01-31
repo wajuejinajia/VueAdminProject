@@ -33,20 +33,20 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import axios from 'axios';
+import { ref, getCurrentInstance, onMounted } from 'vue';
+const {proxy} = getCurrentInstance()
+
 const getImageUrl = (user) => {
     return new URL(`../assets/images/${user}.png`, import.meta.url).href
 }
 
-axios({
-    url: "/api/home/getTableData",
-    method: "get",
-}).then((res) => {
-    if (res.data.code === 200) {
-        console.log(res.data.data.tableData)
-        tableData.value = res.data.data.tableData
-    }
+const getTableData = async () => {
+    const data = await proxy.$api.getTableData()
+    console.log(data)
+    tableData.value = data.tableData
+}
+onMounted(() => {
+    getTableData()
 })
 
 const tableData = ref([

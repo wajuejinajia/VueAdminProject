@@ -11,10 +11,13 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { createPinia } from 'pinia'
 // 引入mock
 import '@/api/mock.js'
+// 引入api借口
+import api from './api/api'
 
 const app = createApp(App)
 const pinia = createPinia()
 
+app.config.globalProperties.$api = api
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }

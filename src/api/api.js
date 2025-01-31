@@ -8,8 +8,9 @@ import request from "./request";
 export default {
     getTableData() {
         return request({
-            url: "/api/home/getTableData",
-            method: "get"
+            url: "/home/getTable",
+            method: "get",
+            mock: true
         })
     }
 }

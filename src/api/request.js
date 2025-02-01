@@ -1,7 +1,6 @@
 import axios from "axios";
 import { ElMessage } from "element-plus";
 import config from "../config";
-import { el } from "element-plus/es/locales.mjs";
 
 const service = axios.create({
     baseURL: config.baseApi
@@ -29,6 +28,7 @@ service.interceptors.response.use((res) => {
     }
 });
 
+// request核心函数
 function request(options) {
     options.method = options.method || 'get'
 

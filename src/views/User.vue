@@ -12,12 +12,13 @@
 </div>
 <div class="table">
     <el-table :data="tableData" style="width: 100%">
-        <el-table-column fixed prop="date" label="Date" width="150" />
-        <el-table-column prop="name" label="Name" width="120" />
-        <el-table-column prop="state" label="State" width="120" />
-        <el-table-column prop="city" label="City" width="120" />
-        <el-table-column prop="address" label="Address" width="600" />
-        <el-table-column prop="zip" label="Zip" width="120" />
+        <el-table-column 
+        v-for="item in tableLabel"
+        :key="item.prop"
+        :width="item.width ? item.width : 125"
+        :prop="item.prop"
+        :label="item.label"
+        />
         <el-table-column fixed="right" label="Operations" min-width="120">
         <template #default>
             <el-button type="primary" size="small" @click="handleClick">编辑</el-button>
@@ -29,50 +30,61 @@
 </template>
 
 <script setup>
+import {ref, getCurrentInstance, onMounted, reactive} from 'vue'
 
 const handleClick = () => {
   console.log('click')
 }
 
+const tableData = ref([])
 
-const tableData = [
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Home',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Office',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Home',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Office',
-  },
-]
+const tableLabel = reactive([
+    {
+        prop: 'name',
+        label: '姓名'
+    },
+    {
+        prop: 'age',
+        label: '年龄'
+    },
+    {
+        prop: 'sexLabel',
+        label: '性别'
+    },
+    {
+        prop: 'birth',
+        label: '出生日期',
+        width: 200
+    },
+    {
+        prop: 'addr',
+        label: '地址',
+        width: 400
+    },
+])
+
+
+const {proxy} = getCurrentInstance()
+
+const getUserData = async () => {
+    const config = reactive({
+        page: 1,
+        name: "",
+    })
+    let data = await proxy.$api.getUserData(config)
+    console.log(data)
+    tableData.value = data.list.map(item => ({
+        ...item,
+        sexLabel: item.sex === 1 ? '男' : '女'
+
+    }))
+}
+
+
+onMounted(() => {
+    getUserData()
+})
+
 </script>
 
 <style scoped>

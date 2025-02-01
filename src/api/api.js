@@ -27,4 +27,18 @@ export default {
             mock: true
         })
     },
+    // getUserData() {
+    //     return request({
+    //         url: "/home/getUserData",
+    //         method: "post",
+    //         mock: true
+    //     })
+    // },
+    getUserData(params) {
+        return request({
+            url: '/user/getUserData',
+            method: 'get',
+            data: params
+        })
+    },
 }

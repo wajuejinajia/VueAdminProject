@@ -34,11 +34,11 @@ export default {
     //         mock: true
     //     })
     // },
-    getUserData(params) {
+    getUserData(data) {
         return request({
             url: '/user/getUserData',
             method: 'get',
-            data: params
+            data
         })
     },
 }

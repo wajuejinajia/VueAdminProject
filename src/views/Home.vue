@@ -43,12 +43,16 @@
                 </div>
             </el-card>
             </div>
+            <el-card class="top-echart">
+                <div ref="echart" style="height: 280px"></div>
+            </el-card>
         </el-col>
     </el-row>
 </template>
 
 <script setup>
 import { ref, getCurrentInstance, onMounted, reactive } from 'vue';
+import * as echarts from 'echarts'
 const {proxy} = getCurrentInstance()
 
 const getImageUrl = (user) => {
@@ -68,9 +72,16 @@ const getCountData = async () => {
 }
 
 const getChartData = async () => {
-    const data = await proxy.$api.getChartData()
-    console.log(data)
-    chartData.value = data
+    const {orderData} = await proxy.$api.getChartData()
+    // 对第一个图标进行x轴 和 series 赋值
+    xOptions.xAxis.data = orderData.date
+    xOptions.series = Object.keys(orderData.data[0]).map(val => ({
+        name: val,
+        data: orderData.data.map(item => item[val]),
+        type: 'line'
+    }))
+    const oneEchart = echarts.init(proxy.$refs['echart'])
+    oneEchart.setOption(xOptions)
 }
 
 onMounted(() => {

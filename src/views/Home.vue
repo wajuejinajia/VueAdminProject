@@ -46,6 +46,15 @@
             <el-card class="top-echart">
                 <div ref="echart" style="height: 280px"></div>
             </el-card>
+
+            <div class="graph">
+                <el-card>
+                    <div ref="userEchart" style="height: 240px;"></div>
+                </el-card>
+                <el-card>
+                    <div ref="videoEchart" style="height: 240px;"></div>
+                </el-card>
+            </div>
         </el-col>
     </el-row>
 </template>
@@ -55,24 +64,35 @@ import { ref, getCurrentInstance, onMounted, reactive } from 'vue';
 import * as echarts from 'echarts'
 const {proxy} = getCurrentInstance()
 
+const tableData = ref([])
+const countData = ref([])
+const chartData = ref([])
+const observer = ref(null)
+const tableLabel = ref({
+    name: "课程",
+    todayBuy: "今日购买",
+    monthBuy: "本月购买",
+    totalBuy: "总购买",
+})
+
 const getImageUrl = (user) => {
     return new URL(`../assets/images/${user}.png`, import.meta.url).href
 }
 
 const getTableData = async () => {
     const data = await proxy.$api.getTableData()
-    console.log(data.tableData)
+    // console.log(data.tableData)
     tableData.value = data.tableData
 }
 
 const getCountData = async () => {
     const data = await proxy.$api.getCountData()
-    console.log(data)
+    // console.log(data)
     countData.value = data
 }
 
 const getChartData = async () => {
-    const {orderData} = await proxy.$api.getChartData()
+    const {orderData, userData, videoData} = await proxy.$api.getChartData()
     // 对第一个图标进行x轴 和 series 赋值
     xOptions.xAxis.data = orderData.date
     xOptions.series = Object.keys(orderData.data[0]).map(val => ({
@@ -82,23 +102,47 @@ const getChartData = async () => {
     }))
     const oneEchart = echarts.init(proxy.$refs['echart'])
     oneEchart.setOption(xOptions)
+
+    // 对第二个表格进行渲染
+    xOptions.xAxis.data = userData.map(item => item.data)
+    xOptions.series = [
+        {
+            name: "新增用户",
+            data: userData.map(item => item.new),
+            type: 'bar'
+        },
+        {
+            name: "活跃用户",
+            data: userData.map(item => item.active),
+            type: 'bar'
+        },
+    ]
+    const twoEchart = echarts.init(proxy.$refs['userEchart'])
+    twoEchart.setOption(xOptions)
+
+    // 对饼状图进行渲染
+    pieOptions.series = [
+        {
+            data: videoData,
+            type: 'pie'
+        }
+    ]
+    const threeEchart = echarts.init(proxy.$refs['videoEchart'])
+    threeEchart.setOption(pieOptions)
+
+    // 监听页面大小变化
+    // 如果监听的页面容器大小发生了变化，回调函数就会发生变化
+    observer.value = new ResizeObserver(() => {
+        oneEchart.resize()
+        twoEchart.resize()
+        threeEchart.resize()
+    })
 }
 
 onMounted(() => {
     getTableData()
     getCountData()
     getChartData()
-})
-
-const tableData = ref([])
-const countData = ref([])
-const chartData = ref([])
-
-const tableLabel = ref({
-    name: "课程",
-    todayBuy: "今日购买",
-    monthBuy: "本月购买",
-    totalBuy: "总购买",
 })
 
 //这个是折线图和柱状图 两个图表共用的公共配置

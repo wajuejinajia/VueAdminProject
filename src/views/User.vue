@@ -20,9 +20,9 @@
             :label="item.label"
             />
             <el-table-column fixed="right" label="Operations" min-width="120">
-            <template #default>
+            <template #default="scope">
                 <el-button type="primary" size="small" @click="handleClick">编辑</el-button>
-                <el-button type="danger" size="small">删除</el-button>
+                <el-button type="danger" size="small" @click="handleDelete(scope.row)">删除</el-button>
             </template>
             </el-table-column>
         </el-table>
@@ -37,6 +37,7 @@
 </template>
 
 <script setup>
+import { ElMessage, ElMessageBox } from 'element-plus'
 import {ref, getCurrentInstance, onMounted, reactive} from 'vue'
 
 const handleClick = () => {
@@ -90,15 +91,23 @@ const handleChange = (page) => {
     getUserData()
 }
 
+const handleDelete = (val) => {
+    ElMessageBox.confirm("你确定要删除吗？").then(async () => {
+        await proxy.$api.deleteUser({id: val.id})
+        ElMessage({
+            showClose: true,
+            message: '删除成功',
+            type: 'success'
+        })
+        getUserData()
+    })
+}
+
 const {proxy} = getCurrentInstance()
 
 const getUserData = async () => {
-    // const config = reactive({
-    //     page: 1,
-    //     name: "",
-    // })
     let data = await proxy.$api.getUserData(config)
-    console.log(data)
+    // console.log(data)
     tableData.value = data.list.map(item => ({
         ...item,
         sexLabel: item.sex === 1 ? '男' : '女'

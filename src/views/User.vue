@@ -1,6 +1,6 @@
 <template>
     <div class="user-header">
-        <el-button type="primary">新增</el-button>
+        <el-button type="primary" @click="handleAdd">新增</el-button>
         <el-form :inline="true" :model="formInline">
             <el-form-item label="请输入">
                 <el-input placeholder="请输入用户名" v-model="formInline.keyWord"></el-input>
@@ -33,6 +33,7 @@
         size="small" 
         :total="config.total"
         @current-change="handleChange"/>
+
     </div>
 
     <el-dialog
@@ -105,7 +106,7 @@ const handleClick = () => {
 
 const tableData = ref([])
 const action = ref('add')
-const dialogVisible = ref(true)
+const dialogVisible = ref(false)
 const formUser = reactive({
     sex: '1'
 })
@@ -150,6 +151,17 @@ const formInline = reactive({
     keyWord: ''
 })
 
+const timeFormat = (time) => {
+    var time = new Date(time)
+    var year = time.getFullYear()
+    var month = time.getMonth() + 1
+    var date = time.getDate()
+    function add(m) {
+        return m < 10 ? '0' + m : m
+    }
+    return year + '-' + add(month) + '-' + add(date)
+}
+
 const config = reactive({
     name: '',
     total: 0,
@@ -181,10 +193,41 @@ const handleDelete = (val) => {
 const handleClose = () => {
     // 获取表单重置表单
     dialogVisible.value = false
+    proxy.$refs['userForm'].resetFields()
 }
 
 const handleCancel = () => {
     dialogVisible.value = false
+    proxy.$refs['userForm'].resetFields()
+}
+
+const handleAdd = () => {
+    dialogVisible.value = true
+    action.value = 'add'
+}
+
+const onSubmit = () => {
+    // 先校验
+    proxy.$refs['userForm'].validate(async(valid) => {
+        if(valid) {
+            let res = null
+            formUser.birth = /^\d{4}-\d{2}-\d{2}$/.test(formUser.birth) ? formUser.birth : timeFormat(formUser.birth)
+            if (action.value === 'add') {
+                res = await proxy.$api.addUser(formUser)
+            }
+            if(res) {
+                dialogVisible.value = false
+                proxy.$refs['userForm'].resetFields()
+                getUserData()
+            }
+        } else {
+            ElMessage({
+                showClose:true,
+                message: '请输入正确的内容',
+                type: 'error'
+            })
+        }
+    })
 }
 
 const {proxy} = getCurrentInstance()

@@ -9,3 +9,4 @@ Mock.mock(/api\/home\/getChartData/, "get", homeApi.getChartData)
 // Mock.mock(RegExp('^/api/user/getUserData(\\?.*)?$'), 'get', userApi.getUserList);
 Mock.mock(/\/user\/getUserData/, 'get', (config) => userApi.getUserList(config))
 Mock.mock(/api\/user\/deleteUser/, "get", userApi.deleteUser)
+Mock.mock(/api\/user\/addUser/, "post", userApi.createUser)

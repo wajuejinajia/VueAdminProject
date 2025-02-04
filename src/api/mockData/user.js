@@ -90,4 +90,27 @@ export default {
         }
     },
 
+    /**
+   * 增加用户
+   * @param name, addr, age, birth, sex
+   * @return {{code: number, data: {message: string}}}
+   */
+    createUser: config => {
+        const { name, addr, age, birth, sex } = JSON.parse(config.body)
+        List.unshift({
+            id: Mock.Random.guid(),
+            name: name,
+            addr: addr,
+            age: age,
+            birth: birth,
+            sex: sex
+        })
+        return {
+            code: 200,
+            data: {
+                message: '添加成功'
+            }
+        }
+    },
+
 }

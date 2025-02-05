@@ -12,17 +12,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { useAllDataStore } from '../stores';
 
-const tags = ref([
-    {
-        path: '/home',
-        name: 'home',
-        label: '首页',
-        icon: 'home'
-    }
-])
+const store = useAllDataStore()
+
+const tags = computed(() => store.state.tags)
 
 const route = useRoute()
 </script>

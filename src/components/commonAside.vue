@@ -5,13 +5,15 @@
            text-color="#fff"
            :collapse="isCollapse"
            :collapse-transition="false"
+           :default-active="activeMenu"
         >
             <h3 v-show="!isCollapse">通用后台管理系统</h3>
             <h3 v-show="isCollapse">后台</h3>
             <el-menu-item
             v-for="item in noChildren" 
             :index="item.path" 
-            :key="item.path">
+            :key="item.path"
+            @click="handleMenu(item)">
             <component class="icons" :is="item.icon"></component>
             <span>{{item.label}}</span>
             </el-menu-item>
@@ -24,28 +26,28 @@
                 <component class="icons" :is="item.icon"></component>
                 <span>{{item.label}}</span>
             </template>
-            <el-menu-item-group>
-                <el-menu-item 
-                    v-for="(subItem, subIndex) in item.children" 
-                    :index="subItem.path" 
-                    :key="subItem.path">
-                    <component class="icons" :is="subItem.icon"></component>
-                    <span>{{subItem.label}}</span>
-                </el-menu-item>
-            </el-menu-item-group>
-       
-      
+                <el-menu-item-group>
+                    <el-menu-item 
+                        v-for="(subItem, subIndex) in item.children" 
+                        :index="subItem.path" 
+                        :key="subItem.path"
+                        @click="handleMenu(subIndex)">
+                        <component class="icons" :is="subItem.icon"></component>
+                        <span>{{subItem.label}}</span>
+                    </el-menu-item>
+                </el-menu-item-group>
             </el-sub-menu>
-
         </el-menu>
 </el-aside>
 </template>
 
 <script setup>
 import {ref,computed} from 'vue'
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import {useAllDataStore} from '@/stores'
-const router=useRouter()
+const router = useRouter()
+const route = useRoute()
+const activeMenu = computed(() => route.path)
 
 const list =ref([
       	{
@@ -101,6 +103,11 @@ const width = computed(() => store.state.isCollapse ? '64px' : '180px')
 
 const clickMenu=(item)=>{
     router.push(item.path)
+}
+
+const handleMenu = (item) => {
+    router.push(item.path)
+    store.selectMenu(item)
 }
 </script>
 

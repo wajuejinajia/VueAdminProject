@@ -21,7 +21,7 @@
             />
             <el-table-column fixed="right" label="Operations" min-width="120">
             <template #default="scope">
-                <el-button type="primary" size="small" @click="handleClick">编辑</el-button>
+                <el-button type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
                 <el-button type="danger" size="small" @click="handleDelete(scope.row)">删除</el-button>
             </template>
             </el-table-column>
@@ -74,6 +74,8 @@
               type="date"
               placeholder="请输入"
               style="width: 100%"
+              format="YYYY-MM-DD" 
+              value-format="YYYY-MM-DD"
             />
           </el-form-item>
         </el-col>
@@ -98,7 +100,7 @@
 
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus'
-import {ref, getCurrentInstance, onMounted, reactive} from 'vue'
+import {ref, getCurrentInstance, onMounted, reactive, nextTick} from 'vue'
 
 const handleClick = () => {
   console.log('click')
@@ -151,16 +153,16 @@ const formInline = reactive({
     keyWord: ''
 })
 
-const timeFormat = (time) => {
-    var time = new Date(time)
-    var year = time.getFullYear()
-    var month = time.getMonth() + 1
-    var date = time.getDate()
-    function add(m) {
-        return m < 10 ? '0' + m : m
-    }
-    return year + '-' + add(month) + '-' + add(date)
-}
+// const timeFormat = (time) => {
+//     var time = new Date(time)
+//     var year = time.getFullYear()
+//     var month = time.getMonth() + 1
+//     var date = time.getDate()
+//     function add(m) {
+//         return m < 10 ? '0' + m : m
+//     }
+//     return year + '-' + add(month) + '-' + add(date)
+// }
 
 const config = reactive({
     name: '',
@@ -206,14 +208,24 @@ const handleAdd = () => {
     action.value = 'add'
 }
 
+const handleEdit = () => {
+  action.value = 'edit'
+  dialogVisible.value = true
+  nextTick(() => {
+    Object.assign(formUser, {...val, sex: '' + val.sex})
+  })
+}
+
 const onSubmit = () => {
     // 先校验
     proxy.$refs['userForm'].validate(async(valid) => {
         if(valid) {
             let res = null
-            formUser.birth = /^\d{4}-\d{2}-\d{2}$/.test(formUser.birth) ? formUser.birth : timeFormat(formUser.birth)
+            // formUser.birth = /^\d{4}-\d{2}-\d{2}$/.test(formUser.birth) ? formUser.birth : timeFormat(formUser.birth)
             if (action.value === 'add') {
                 res = await proxy.$api.addUser(formUser)
+            } else {
+              res = await proxy.$api.editUser(formUser)
             }
             if(res) {
                 dialogVisible.value = false
@@ -237,7 +249,7 @@ const getUserData = async () => {
     // console.log(data)
     tableData.value = data.list.map(item => ({
         ...item,
-        sexLabel: item.sex === 1 ? '男' : '女'
+        sexLabel: item.sex === '1' ? '男' : '女'
     }))
     config.total = data.count
 }

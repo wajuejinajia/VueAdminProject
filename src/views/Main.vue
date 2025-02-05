@@ -7,6 +7,7 @@
                 <el-header class="el-header">
                     <common-header />
                 </el-header>
+                <common-tab />
                 <el-main class="right-main">
                     <router-view></router-view>
                 </el-main>
@@ -18,6 +19,7 @@
 <script setup>
 import commonAside from '../components/commonAside.vue';
 import commonHeader from '../components/commonHeader.vue';
+import commonTab from '../components/commonTab.vue';
 </script>
 
 <style scoped lang="less">

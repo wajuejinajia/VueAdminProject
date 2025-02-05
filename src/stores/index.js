@@ -27,9 +27,15 @@ export const useAllDataStore = defineStore('allData', () => {
         }
     }
 
+    function undateTags(tag) {
+        let index = state.value.tags.findIndex((item) => item.name === tag.name)
+        state.value.tags.splice(index, 1)
+    }
+
     return {
         state,
-        selectMenu
+        selectMenu,
+        undateTags
     }
 
 })

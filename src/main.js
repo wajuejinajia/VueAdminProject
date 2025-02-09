@@ -14,12 +14,18 @@ import '@/api/mock.js'
 // 引入api借口
 import api from './api/api'
 
+import { useAllDataStore } from './stores'
+
 const app = createApp(App)
 const pinia = createPinia()
 
+app.use(pinia)
+const store = useAllDataStore()
+
+store.addMenu(router, "refresh")
 app.config.globalProperties.$api = api
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
 
-app.use(router).use(ElementPlus).use(pinia).mount('#app')
+app.use(router).use(ElementPlus).mount('#app')

@@ -16,11 +16,23 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { reactive, getCurrentInstance } from 'vue';
+import { useAllDataStore } from '../stores';
+import { useRouter } from 'vue-router';
 const loginForm = reactive({
     username: '',
     password: ''
 })
+const {proxy} = getCurrentInstance()
+const store = useAllDataStore()
+const router = useRouter()
+const handleLogin = async () => {
+    const res = await proxy.$api.getMenu(loginForm)
+    console.log(res)
+    store.updateMenuList(res.menuList)
+    store.state.token = res.token
+    router.push('/home')
+}
 </script>
 
 <style lang="less" scoped>

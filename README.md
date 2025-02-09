@@ -1,4 +1,4 @@
-**商城后台管理系统**
+### 商城后台管理系统
 ## 项目简介
 这是一个基于 Vue 3 的商城后台管理系统，主要用于管理商城的商品、订单、用户等数据。项目采用现代化的前端技术栈，提供了丰富的功能和良好的用户体验。
 
@@ -21,7 +21,7 @@ Mock 数据: MockJS
 
 ## 项目结构
 
-```javascript
+```
 src/
 ├── assets/              # 静态资源（图片、字体等）
 ├── components/          # 公共组件
@@ -40,7 +40,7 @@ src/
 
 # 1. 克隆项目
 ```bash
-git clone https://github.com/你的用户名/你的项目名.git
+git clone git@github.com:wajuejinajia/VueAdminProject.git
 cd 你的项目名
 ```
 # 2. 安装依赖

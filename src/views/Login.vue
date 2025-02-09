@@ -31,8 +31,8 @@ const handleLogin = async () => {
     console.log(res)
     store.updateMenuList(res.menuList)
     store.state.token = res.token
-    router.push('/home')
     store.addMenu(router)
+    router.push('/home')
 }
 </script>
 

@@ -38,11 +38,35 @@ export const useAllDataStore = defineStore('allData', () => {
         state.value.menuList = val
     }
 
+    function addMenu(router) {
+        const menu = state.value.menuList
+        const module = import.meta.glob('../views/**/*.vue')
+        const routeArr = []
+        menu.forEach((item) => {
+            if (item.children) {
+                item.children.forEach((val) => {
+                    let url = `../views/${val.url}.vue`
+                    val.component = module[url]
+                    routeArr.push(...item.children)
+                })
+            } else {
+                let url = `../views/${item.url}.vue`
+                item.component = module[url]
+                routeArr.push(item)
+            }
+        })
+
+        routeArr.forEach((item) => {
+            state.value.routerList.push(router.addRoute('main', item))
+        })
+    }
+
     return {
         state,
         selectMenu,
         undateTags,
-        updateMenuList
+        updateMenuList,
+        addMenu
     }
 
 })

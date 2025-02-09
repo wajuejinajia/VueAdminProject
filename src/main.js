@@ -16,6 +16,21 @@ import api from './api/api'
 
 import { useAllDataStore } from './stores'
 
+function isRouter(to) {
+    let res = router.getRoutes()
+    let resFil = res.filter((item) => item.path === to.path)
+    return resFil.length > 0
+}
+
+router.beforeEach((to, from) => {
+    if (to.path !== '/login' && !store.state.token) {
+        return { name: 'login' }
+    }
+    if (!isRouter(to)) {
+        return { name: '404' }
+    }
+})
+
 const app = createApp(App)
 const pinia = createPinia()
 

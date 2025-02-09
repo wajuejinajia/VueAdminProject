@@ -87,12 +87,23 @@ export const useAllDataStore = defineStore('allData', () => {
         })
     }
 
+    function clean() {
+        state.value.routerList.forEach((item) => {
+            // console.log(item)
+            if (item) item()
+        })
+        state.value = initState()
+        // 删除本地缓存
+        localStorage.removeItem("store")
+    }
+
     return {
         state,
         selectMenu,
         undateTags,
         updateMenuList,
-        addMenu
+        addMenu,
+        clean
     }
 
 })
